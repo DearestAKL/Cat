@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cat Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            border: 2px solid #333;
+            background-color: #87CEEB;
+        }
+        .game-info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+        }
+        .game-over button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-info">
+        <h2>Cat Game</h2>
+        <p>分数: <span id="score">0</span></p>
+        <p>时间: <span id="time">60</span>秒</p>
+    </div>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <div class="game-over" id="gameOver">
+        <h2>游戏结束!</h2>
+        <p>最终分数: <span id="finalScore">0</span></p>
+        <button onclick="restartGame()">重新开始</button>
+    </div>
+
+    <script>
+        // 游戏变量
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score');
+        const timeElement = document.getElementById('time');
+        const gameOverElement = document.getElementById('gameOver');
+        const finalScoreElement = document.getElementById('finalScore');
+
+        let score = 0;
+        let time = 60;
+        let gameInterval;
+        let mouseInterval;
+        let cats = [];
+        let mice = [];
+        let gameRunning = false;
+
+        // 猫的类
+        class Cat {
+            constructor() {
+                this.x = Math.random() * (canvas.width - 50);
+                this.y = Math.random() * (canvas.height - 50);
+                this.size = 50;
+                this.speed = 2;
+                this.directionX = Math.random() > 0.5 ? 1 : -1;
+                this.directionY = Math.random() > 0.5 ? 1 : -1;
+            }
+
+            update() {
+                // 移动猫
+                this.x += this.speed * this.directionX;
+                this.y += this.speed * this.directionY;
+
+                // 边界检测
+                if (this.x <= 0 || this.x >= canvas.width - this.size) {
+                    this.directionX *= -1;
+                }
+                if (this.y <= 0 || this.y >= canvas.height - this.size) {
+                    this.directionY *= -1;
+                }
+
+                // 检测是否捉到老鼠
+                for (let i = mice.length - 1; i >= 0; i--) {
+                    const mouse = mice[i];
+                    if (this.x < mouse.x + mouse.size &&
+                        this.x + this.size > mouse.x &&
+                        this.y < mouse.y + mouse.size &&
+                        this.y + this.size > mouse.y) {
+                        // 捉到老鼠，增加分数
+                        score += 10;
+                        scoreElement.textContent = score;
+                        // 移除被捉到的老鼠
+                        mice.splice(i, 1);
+                    }
+                }
+            }
+
+            draw() {
+                // 绘制猫
+                ctx.fillStyle = '#FF6347';
+                ctx.fillRect(this.x, this.y, this.size, this.size);
+                // 绘制猫的眼睛
+                ctx.fillStyle = 'white';
+                ctx.beginPath();
+                ctx.arc(this.x + 15, this.y + 15, 5, 0, Math.PI * 2);
+                ctx.arc(this.x + 35, this.y + 15, 5, 0, Math.PI * 2);
+                ctx.fill();
+                // 绘制猫的瞳孔
+                ctx.fillStyle = 'black';
+                ctx.beginPath();
+                ctx.arc(this.x + 15, this.y + 15, 2, 0, Math.PI * 2);
+                ctx.arc(this.x + 35, this.y + 15, 2, 0, Math.PI * 2);
+                ctx.fill();
+                // 绘制猫的嘴
+                ctx.beginPath();
+                ctx.arc(this.x + 25, this.y + 35, 5, 0, Math.PI);
+                ctx.stroke();
+            }
+        }
+
+        // 老鼠的类
+        class Mouse {
+            constructor() {
+                this.x = Math.random() * (canvas.width - 30);
+                this.y = Math.random() * (canvas.height - 30);
+                this.size = 30;
+                this.speed = 1;
+                this.directionX = Math.random() > 0.5 ? 1 : -1;
+                this.directionY = Math.random() > 0.5 ? 1 : -1;
+            }
+
+            update() {
+                // 移动老鼠
+                this.x += this.speed * this.directionX;
+                this.y += this.speed * this.directionY;
+
+                // 边界检测
+                if (this.x <= 0 || this.x >= canvas.width - this.size) {
+                    this.directionX *= -1;
+                }
+                if (this.y <= 0 || this.y >= canvas.height - this.size) {
+                    this.directionY *= -1;
+                }
+            }
+
+            draw() {
+                // 绘制老鼠
+                ctx.fillStyle = '#8B4513';
+                ctx.fillRect(this.x, this.y, this.size, this.size);
+                // 绘制老鼠的耳朵
+                ctx.beginPath();
+                ctx.moveTo(this.x + 5, this.y);
+                ctx.lineTo(this.x, this.y - 10);
+                ctx.lineTo(this.x + 10, this.y);
+                ctx.moveTo(this.x + 20, this.y);
+                ctx.lineTo(this.x + 15, this.y - 10);
+                ctx.lineTo(this.x + 25, this.y);
+                ctx.fill();
+                // 绘制老鼠的眼睛
+                ctx.fillStyle = 'white';
+                ctx.beginPath();
+                ctx.arc(this.x + 10, this.y + 10, 3, 0, Math.PI * 2);
+                ctx.arc(this.x + 20, this.y + 10, 3, 0, Math.PI * 2);
+                ctx.fill();
+                // 绘制老鼠的瞳孔
+                ctx.fillStyle = 'black';
+                ctx.beginPath();
+                ctx.arc(this.x + 10, this.y + 10, 1, 0, Math.PI * 2);
+                ctx.arc(this.x + 20, this.y + 10, 1, 0, Math.PI * 2);
+                ctx.fill();
+                // 绘制老鼠的尾巴
+                ctx.beginPath();
+                ctx.moveTo(this.x + 15, this.y + 30);
+                ctx.lineTo(this.x + 15, this.y + 40);
+                ctx.lineTo(this.x + 20, this.y + 35);
+                ctx.stroke();
+            }
+        }
+
+        // 初始化游戏
+        function initGame() {
+            score = 0;
+            time = 60;
+            scoreElement.textContent = score;
+            timeElement.textContent = time;
+            gameOverElement.style.display = 'none';
+            cats = [];
+            mice = [];
+            gameRunning = true;
+
+            // 创建2只猫
+            for (let i = 0; i < 2; i++) {
+                cats.push(new Cat());
+            }
+
+            // 创建5只老鼠
+            for (let i = 0; i < 5; i++) {
+                mice.push(new Mouse());
+            }
+
+            // 开始游戏循环
+            gameInterval = setInterval(gameLoop, 1000 / 60);
+
+            // 开始计时器
+            const timerInterval = setInterval(() => {
+                time--;
+                timeElement.textContent = time;
+                if (time <= 0) {
+                    clearInterval(timerInterval);
+                    endGame();
+                }
+            }, 1000);
+
+            // 定期生成老鼠
+            mouseInterval = setInterval(() => {
+                if (mice.length < 10) {
+                    mice.push(new Mouse());
+                }
+            }, 2000);
+        }
+
+        // 游戏循环
+        function gameLoop() {
+            if (!gameRunning) return;
+
+            // 清空画布
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 更新和绘制猫
+            for (const cat of cats) {
+                cat.update();
+                cat.draw();
+            }
+
+            // 更新和绘制老鼠
+            for (const mouse of mice) {
+                mouse.update();
+                mouse.draw();
+            }
+        }
+
+        // 结束游戏
+        function endGame() {
+            gameRunning = false;
+            clearInterval(gameInterval);
+            clearInterval(mouseInterval);
+            finalScoreElement.textContent = score;
+            gameOverElement.style.display = 'block';
+        }
+
+        // 重新开始游戏
+        function restartGame() {
+            initGame();
+        }
+
+        // 点击画布开始游戏
+        canvas.addEventListener('click', () => {
+            if (!gameRunning) {
+                initGame();
+            }
+        });
+
+        // 初始显示游戏说明
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'white';
+        ctx.font = '24px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('点击画布开始游戏', canvas.width / 2, canvas.height / 2);
+        ctx.font = '16px Arial';
+        ctx.fillText('使用鼠标控制猫移动，捉到老鼠获得分数', canvas.width / 2, canvas.height / 2 + 40);
+        ctx.fillText('游戏时间为60秒，看你能得多少分！', canvas.width / 2, canvas.height / 2 + 70);
+    </script>
+</body>
+</html>
