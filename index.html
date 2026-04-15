@@ -3,295 +3,1281 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cat Game</title>
+    <title>猫国建设者</title>
     <style>
-        body {
+        * {
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
-            font-family: Arial, sans-serif;
+            box-sizing: border-box;
         }
-        canvas {
-            border: 2px solid #333;
-            background-color: #87CEEB;
+        
+        body {
+            background-color: #ffffff;
+            font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+            color: #1d1d1f;
+            font-size: 16px;
+            line-height: 1.5;
+            font-weight: 400;
         }
-        .game-info {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 10px;
-            border-radius: 5px;
+        
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 24px;
         }
-        .game-over {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
+        
+        h1, h2, h3 {
+            font-family: 'SF Pro Rounded', system-ui, -apple-system, sans-serif;
+            font-weight: 500;
+            color: #000000;
+        }
+        
+        h1 {
+            font-size: 36px;
+            line-height: 1.11;
+            margin-bottom: 16px;
+        }
+        
+        h2 {
+            font-size: 24px;
+            line-height: 1.33;
+            margin-bottom: 12px;
+        }
+        
+        h3 {
+            font-size: 18px;
+            line-height: 1.56;
+            margin-bottom: 8px;
+        }
+        
+        .header {
             text-align: center;
+            padding: 32px 0;
+            border-bottom: 1px solid #e5e5e5;
+            margin-bottom: 32px;
+        }
+        
+        .header p {
+            color: #737373;
+            font-size: 16px;
+        }
+        
+        .game-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr 280px;
+            gap: 24px;
+        }
+        
+        .panel {
+            background-color: #fafafa;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .resource-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        
+        .resource-item:last-child {
+            border-bottom: none;
+        }
+        
+        .resource-name {
+            color: #525252;
+        }
+        
+        .resource-value {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            color: #000000;
+            font-weight: 500;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 24px;
+            font-size: 16px;
+            font-weight: 500;
+            border: 1px solid #e5e5e5;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+            font-family: inherit;
+        }
+        
+        .btn-primary {
+            background-color: #e5e5e5;
+            color: #262626;
+        }
+        
+        .btn-primary:hover {
+            background-color: #d4d4d4;
+        }
+        
+        .btn-secondary {
+            background-color: #ffffff;
+            color: #404040;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #fafafa;
+        }
+        
+        .btn-black {
+            background-color: #000000;
+            color: #ffffff;
+            border-color: #000000;
+        }
+        
+        .btn-black:hover {
+            background-color: #262626;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-small {
+            padding: 6px 16px;
+            font-size: 14px;
+        }
+        
+        .building-item {
+            padding: 16px;
+            margin-bottom: 12px;
+            background-color: #ffffff;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+        }
+        
+        .building-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .building-name {
+            font-weight: 500;
+            color: #000000;
+        }
+        
+        .building-count {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            color: #525252;
+            font-size: 14px;
+        }
+        
+        .building-desc {
+            font-size: 14px;
+            color: #737373;
+            margin-bottom: 12px;
+        }
+        
+        .building-cost {
+            font-size: 12px;
+            color: #a3a3a3;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .tab {
+            padding: 8px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 9999px;
+            cursor: pointer;
+            background-color: transparent;
+            border: 1px solid #e5e5e5;
+            color: #737373;
+            transition: all 0.15s ease;
+        }
+        
+        .tab:hover {
+            background-color: #fafafa;
+        }
+        
+        .tab.active {
+            background-color: #e5e5e5;
+            color: #262626;
+        }
+        
+        .main-content {
+            min-height: 600px;
+        }
+        
+        .section {
             display: none;
         }
-        .game-over button {
-            margin-top: 10px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
+        
+        .section.active {
+            display: block;
+        }
+        
+        .cat-assignment {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background-color: #ffffff;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .cat-assignment-info {
+            flex: 1;
+        }
+        
+        .cat-assignment-name {
+            font-weight: 500;
+            color: #000000;
+        }
+        
+        .cat-assignment-count {
+            font-size: 14px;
+            color: #737373;
+        }
+        
+        .cat-assignment-controls {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            border-radius: 9999px;
+        }
+        
+        .tech-item {
+            padding: 16px;
+            background-color: #ffffff;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .tech-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .tech-name {
+            font-weight: 500;
+            color: #000000;
+        }
+        
+        .tech-status {
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            background-color: #e5e5e5;
+            color: #525252;
+        }
+        
+        .tech-status.unlocked {
+            background-color: #000000;
+            color: #ffffff;
+        }
+        
+        .tech-desc {
+            font-size: 14px;
+            color: #737373;
+            margin-bottom: 12px;
+        }
+        
+        .tech-cost {
+            font-size: 12px;
+            color: #a3a3a3;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+        
+        .log-panel {
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 14px;
+            color: #525252;
+        }
+        
+        .log-entry {
+            padding: 4px 0;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .stat-item {
+            padding: 12px;
+            background-color: #ffffff;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 500;
+            color: #000000;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #737373;
+            margin-top: 4px;
+        }
+        
+        .progress-bar {
+            height: 4px;
+            background-color: #e5e5e5;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: #000000;
+            transition: width 0.3s ease;
+        }
+        
+        .alert {
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+        
+        .alert-info {
+            background-color: #fafafa;
+            border: 1px solid #e5e5e5;
+            color: #525252;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 16px;
+        }
+        
+        @media (max-width: 1024px) {
+            .game-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar-left, .sidebar-right {
+                order: 1;
+            }
+            
+            .main-content {
+                order: 0;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .container {
+                padding: 16px;
+            }
+            
+            h1 {
+                font-size: 30px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="game-info">
-        <h2>Cat Game</h2>
-        <p>分数: <span id="score">0</span></p>
-        <p>时间: <span id="time">60</span>秒</p>
-    </div>
-    <canvas id="gameCanvas" width="800" height="600"></canvas>
-    <div class="game-over" id="gameOver">
-        <h2>游戏结束!</h2>
-        <p>最终分数: <span id="finalScore">0</span></p>
-        <button onclick="restartGame()">重新开始</button>
+    <div class="container">
+        <div class="header">
+            <h1>猫国建设者</h1>
+            <p>从零开始建设你的猫咪王国</p>
+            <div class="header-actions">
+                <button class="btn btn-secondary btn-small" onclick="saveGame()">保存</button>
+                <button class="btn btn-secondary btn-small" onclick="loadGame()">读取</button>
+                <button class="btn btn-secondary btn-small" onclick="resetGame()">重置</button>
+            </div>
+        </div>
+        
+        <div class="game-layout">
+            <div class="sidebar-left">
+                <div class="panel">
+                    <h2>资源</h2>
+                    <div id="resources">
+                        <div class="resource-item">
+                            <span class="resource-name">猫薄荷</span>
+                            <span class="resource-value" id="res-catnip">0</span>
+                        </div>
+                        <div class="resource-item">
+                            <span class="resource-name">木材</span>
+                            <span class="resource-value" id="res-wood">0</span>
+                        </div>
+                        <div class="resource-item">
+                            <span class="resource-name">矿物</span>
+                            <span class="resource-value" id="res-minerals">0</span>
+                        </div>
+                        <div class="resource-item">
+                            <span class="resource-name">煤炭</span>
+                            <span class="resource-value" id="res-coal">0</span>
+                        </div>
+                        <div class="resource-item">
+                            <span class="resource-name">铁</span>
+                            <span class="resource-value" id="res-iron">0</span>
+                        </div>
+                        <div class="resource-item">
+                            <span class="resource-name">钛</span>
+                            <span class="resource-value" id="res-titanium">0</span>
+                        </div>
+                        <div class="resource-item">
+                            <span class="resource-name">毛皮</span>
+                            <span class="resource-value" id="res-furs">0</span>
+                        </div>
+                        <div class="resource-item">
+                            <span class="resource-name">羊皮纸</span>
+                            <span class="resource-value" id="res-parchment">0</span>
+                        </div>
+                        <div class="resource-item">
+                            <span class="resource-name">文化</span>
+                            <span class="resource-value" id="res-culture">0</span>
+                        </div>
+                        <div class="resource-item">
+                            <span class="resource-name">信仰</span>
+                            <span class="resource-value" id="res-faith">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="panel" style="margin-top: 16px;">
+                    <h2>统计</h2>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="stat-cats">0</div>
+                            <div class="stat-label">猫咪数量</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="stat-happiness">100%</div>
+                            <div class="stat-label">幸福度</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="stat-science">0</div>
+                            <div class="stat-label">科技点</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="stat-paragon">0</div>
+                            <div class="stat-label">领导力</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="main-content">
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('gather')">采集</button>
+                    <button class="tab" onclick="switchTab('build')">建筑</button>
+                    <button class="tab" onclick="switchTab('cats')">猫咪</button>
+                    <button class="tab" onclick="switchTab('science')">科技</button>
+                    <button class="tab" onclick="switchTab('craft')">制作</button>
+                    <button class="tab" onclick="switchTab('trade')">贸易</button>
+                    <button class="tab" onclick="switchTab('religion')">宗教</button>
+                </div>
+                
+                <div id="section-gather" class="section active">
+                    <div class="panel">
+                        <h2>采集资源</h2>
+                        <p style="color: #737373; margin-bottom: 16px;">点击按钮采集基础资源</p>
+                        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                            <button class="btn btn-primary" onclick="gatherCatnip()">采集猫薄荷</button>
+                            <button class="btn btn-secondary" id="btn-chop-wood" onclick="chopWood()" disabled>砍伐木材</button>
+                        </div>
+                    </div>
+                    
+                    <div class="panel" style="margin-top: 16px;">
+                        <h2>生产速率</h2>
+                        <div id="production-rates">
+                            <div class="resource-item">
+                                <span class="resource-name">猫薄荷/秒</span>
+                                <span class="resource-value" id="rate-catnip">+0</span>
+                            </div>
+                            <div class="resource-item">
+                                <span class="resource-name">木材/秒</span>
+                                <span class="resource-value" id="rate-wood">+0</span>
+                            </div>
+                            <div class="resource-item">
+                                <span class="resource-name">科技点/秒</span>
+                                <span class="resource-value" id="rate-science">+0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="section-build" class="section">
+                    <div class="panel">
+                        <h2>建筑</h2>
+                        <div id="buildings">
+                            <div class="building-item">
+                                <div class="building-header">
+                                    <span class="building-name">猫薄荷田</span>
+                                    <span class="building-count">数量: <span id="bld-catnipField">0</span></span>
+                                </div>
+                                <div class="building-desc">每秒自动产出猫薄荷</div>
+                                <div class="building-cost">花费: 10 猫薄荷</div>
+                                <button class="btn btn-primary btn-small" style="margin-top: 8px;" onclick="build('catnipField')">建造</button>
+                            </div>
+                            
+                            <div class="building-item">
+                                <div class="building-header">
+                                    <span class="building-name">帐篷</span>
+                                    <span class="building-count">数量: <span id="bld-hut">0</span></span>
+                                </div>
+                                <div class="building-desc">增加猫咪人口上限</div>
+                                <div class="building-cost">花费: 25 木材</div>
+                                <button class="btn btn-primary btn-small" style="margin-top: 8px;" onclick="build('hut')">建造</button>
+                            </div>
+                            
+                            <div class="building-item">
+                                <div class="building-header">
+                                    <span class="building-name">图书馆</span>
+                                    <span class="building-count">数量: <span id="bld-library">0</span></span>
+                                </div>
+                                <div class="building-desc">允许分配学者，产出科技点</div>
+                                <div class="building-cost">花费: 50 木材, 25 羊皮纸</div>
+                                <button class="btn btn-primary btn-small" style="margin-top: 8px;" id="btn-build-library" onclick="build('library')" disabled>建造</button>
+                            </div>
+                            
+                            <div class="building-item">
+                                <div class="building-header">
+                                    <span class="building-name">剧场</span>
+                                    <span class="building-count">数量: <span id="bld-theatre">0</span></span>
+                                </div>
+                                <div class="building-desc">提升猫咪幸福度</div>
+                                <div class="building-cost">花费: 100 木材, 50 矿物</div>
+                                <button class="btn btn-primary btn-small" style="margin-top: 8px;" id="btn-build-theatre" onclick="build('theatre')" disabled>建造</button>
+                            </div>
+                            
+                            <div class="building-item">
+                                <div class="building-header">
+                                    <span class="building-name">工作台</span>
+                                    <span class="building-count">数量: <span id="bld-workshop">0</span></span>
+                                </div>
+                                <div class="building-desc">解锁制作功能</div>
+                                <div class="building-cost">花费: 75 木材</div>
+                                <button class="btn btn-primary btn-small" style="margin-top: 8px;" onclick="build('workshop')">建造</button>
+                            </div>
+                            
+                            <div class="building-item">
+                                <div class="building-header">
+                                    <span class="building-name">矿井</span>
+                                    <span class="building-count">数量: <span id="bld-mine">0</span></span>
+                                </div>
+                                <div class="building-desc">允许分配矿工，产出矿物</div>
+                                <div class="building-cost">花费: 100 木材</div>
+                                <button class="btn btn-primary btn-small" style="margin-top: 8px;" id="btn-build-mine" onclick="build('mine')" disabled>建造</button>
+                            </div>
+                            
+                            <div class="building-item">
+                                <div class="building-header">
+                                    <span class="building-name">庙塔</span>
+                                    <span class="building-count">数量: <span id="bld-temple">0</span></span>
+                                </div>
+                                <div class="building-desc">增加文化上限，产出信仰</div>
+                                <div class="building-cost">花费: 500 木材, 250 矿物, 5 巨石</div>
+                                <button class="btn btn-primary btn-small" style="margin-top: 8px;" id="btn-build-temple" onclick="build('temple')" disabled>建造</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="section-cats" class="section">
+                    <div class="panel">
+                        <h2>猫咪管理</h2>
+                        <div class="alert alert-info">
+                            猫咪总数: <span id="total-cats">0</span> / <span id="max-cats">0</span>
+                        </div>
+                        <div id="cat-assignments">
+                            <div class="cat-assignment">
+                                <div class="cat-assignment-info">
+                                    <div class="cat-assignment-name">伐木工</div>
+                                    <div class="cat-assignment-count">分配: <span id="job-woodcutter">0</span></div>
+                                </div>
+                                <div class="cat-assignment-controls">
+                                    <button class="btn btn-secondary btn-icon" onclick="assignJob('woodcutter', -1)">-</button>
+                                    <button class="btn btn-secondary btn-icon" onclick="assignJob('woodcutter', 1)">+</button>
+                                </div>
+                            </div>
+                            
+                            <div class="cat-assignment">
+                                <div class="cat-assignment-info">
+                                    <div class="cat-assignment-name">学者</div>
+                                    <div class="cat-assignment-count">分配: <span id="job-scholar">0</span></div>
+                                </div>
+                                <div class="cat-assignment-controls">
+                                    <button class="btn btn-secondary btn-icon" onclick="assignJob('scholar', -1)">-</button>
+                                    <button class="btn btn-secondary btn-icon" onclick="assignJob('scholar', 1)">+</button>
+                                </div>
+                            </div>
+                            
+                            <div class="cat-assignment">
+                                <div class="cat-assignment-info">
+                                    <div class="cat-assignment-name">猎人</div>
+                                    <div class="cat-assignment-count">分配: <span id="job-hunter">0</span></div>
+                                </div>
+                                <div class="cat-assignment-controls">
+                                    <button class="btn btn-secondary btn-icon" onclick="assignJob('hunter', -1)">-</button>
+                                    <button class="btn btn-secondary btn-icon" onclick="assignJob('hunter', 1)">+</button>
+                                </div>
+                            </div>
+                            
+                            <div class="cat-assignment">
+                                <div class="cat-assignment-info">
+                                    <div class="cat-assignment-name">矿工</div>
+                                    <div class="cat-assignment-count">分配: <span id="job-miner">0</span></div>
+                                </div>
+                                <div class="cat-assignment-controls">
+                                    <button class="btn btn-secondary btn-icon" onclick="assignJob('miner', -1)">-</button>
+                                    <button class="btn btn-secondary btn-icon" onclick="assignJob('miner', 1)">+</button>
+                                </div>
+                            </div>
+                            
+                            <div class="cat-assignment">
+                                <div class="cat-assignment-info">
+                                    <div class="cat-assignment-name">牧师</div>
+                                    <div class="cat-assignment-count">分配: <span id="job-priest">0</span></div>
+                                </div>
+                                <div class="cat-assignment-controls">
+                                    <button class="btn btn-secondary btn-icon" onclick="assignJob('priest', -1)">-</button>
+                                    <button class="btn btn-secondary btn-icon" onclick="assignJob('priest', 1)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="section-science" class="section">
+                    <div class="panel">
+                        <h2>科技研究</h2>
+                        <p style="color: #737373; margin-bottom: 16px;">当前科技点: <span id="current-science">0</span></p>
+                        <div id="technologies">
+                            <div class="tech-item">
+                                <div class="tech-header">
+                                    <span class="tech-name">农业</span>
+                                    <span class="tech-status" id="tech-agriculture-status">未解锁</span>
+                                </div>
+                                <div class="tech-desc">提升猫薄荷田产量 50%</div>
+                                <div class="tech-cost">花费: 100 科技点</div>
+                                <button class="btn btn-primary btn-small" style="margin-top: 8px;" onclick="research('agriculture')">研究</button>
+                            </div>
+                            
+                            <div class="tech-item">
+                                <div class="tech-header">
+                                    <span class="tech-name">林业</span>
+                                    <span class="tech-status" id="tech-forestry-status">未解锁</span>
+                                </div>
+                                <div class="tech-desc">解锁矿井建筑</div>
+                                <div class="tech-cost">花费: 150 科技点</div>
+                                <button class="btn btn-primary btn-small" style="margin-top: 8px;" onclick="research('forestry')">研究</button>
+                            </div>
+                            
+                            <div class="tech-item">
+                                <div class="tech-header">
+                                    <span class="tech-name">畜牧业</span>
+                                    <span class="tech-status" id="tech-animalHusbandry-status">未解锁</span>
+                                </div>
+                                <div class="tech-desc">解锁猎人职业</div>
+                                <div class="tech-cost">花费: 200 科技点</div>
+                                <button class="btn btn-primary btn-small" style="margin-top: 8px;" onclick="research('animalHusbandry')">研究</button>
+                            </div>
+                            
+                            <div class="tech-item">
+                                <div class="tech-header">
+                                    <span class="tech-name">矿业</span>
+                                    <span class="tech-status" id="tech-mining-status">未解锁</span>
+                                </div>
+                                <div class="tech-desc">解锁矿井建筑，产出矿物</div>
+                                <div class="tech-cost">花费: 300 科技点</div>
+                                <button class="btn btn-primary btn-small" style="margin-top: 8px;" onclick="research('mining')">研究</button>
+                            </div>
+                            
+                            <div class="tech-item">
+                                <div class="tech-header">
+                                    <span class="tech-name">建筑学</span>
+                                    <span class="tech-status" id="tech-architecture-status">未解锁</span>
+                                </div>
+                                <div class="tech-desc">解锁剧场建筑</div>
+                                <div class="tech-cost">花费: 400 科技点</div>
+                                <button class="btn btn-primary btn-small" style="margin-top: 8px;" onclick="research('architecture')">研究</button>
+                            </div>
+                            
+                            <div class="tech-item">
+                                <div class="tech-header">
+                                    <span class="tech-name">炼金术</span>
+                                    <span class="tech-status" id="tech-alchemy-status">未解锁</span>
+                                </div>
+                                <div class="tech-desc">解锁庙塔建筑</div>
+                                <div class="tech-cost">花费: 500 科技点</div>
+                                <button class="btn btn-primary btn-small" style="margin-top: 8px;" onclick="research('alchemy')">研究</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="section-craft" class="section">
+                    <div class="panel">
+                        <h2>制作</h2>
+                        <p style="color: #737373; margin-bottom: 16px;">需要建造工作台才能制作</p>
+                        <div id="crafts">
+                            <div class="building-item">
+                                <div class="building-header">
+                                    <span class="building-name">木材</span>
+                                </div>
+                                <div class="building-desc">将猫薄荷转化为木材</div>
+                                <div class="building-cost">花费: 100 猫薄荷</div>
+                                <button class="btn btn-primary btn-small" style="margin-top: 8px;" onclick="craft('wood')">制作</button>
+                            </div>
+                            
+                            <div class="building-item">
+                                <div class="building-header">
+                                    <span class="building-name">羊皮纸</span>
+                                </div>
+                                <div class="building-desc">用于建造图书馆</div>
+                                <div class="building-cost">花费: 25 毛皮</div>
+                                <button class="btn btn-primary btn-small" style="margin-top: 8px;" id="btn-craft-parchment" onclick="craft('parchment')" disabled>制作</button>
+                            </div>
+                            
+                            <div class="building-item">
+                                <div class="building-header">
+                                    <span class="building-name">巨石</span>
+                                </div>
+                                <div class="building-desc">用于建造庙塔</div>
+                                <div class="building-cost">花费: 250 矿物</div>
+                                <button class="btn btn-primary btn-small" style="margin-top: 8px;" id="btn-craft-megalith" onclick="craft('megalith')" disabled>制作</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="section-trade" class="section">
+                    <div class="panel">
+                        <h2>贸易</h2>
+                        <p style="color: #737373; margin-bottom: 16px;">与其他种族交易获取稀有资源</p>
+                        <div id="trades">
+                            <div class="building-item">
+                                <div class="building-header">
+                                    <span class="building-name">斑马商人</span>
+                                </div>
+                                <div class="building-desc">用木材交换钛（需要船只）</div>
+                                <div class="building-cost">花费: 500 木材</div>
+                                <button class="btn btn-primary btn-small" style="margin-top: 8px;" id="btn-trade-zebra" onclick="trade('zebra')" disabled>交易</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="section-religion" class="section">
+                    <div class="panel">
+                        <h2>宗教</h2>
+                        <p style="color: #737373; margin-bottom: 16px;">当前信仰: <span id="current-faith">0</span></p>
+                        <div id="religion-actions">
+                            <div class="building-item">
+                                <div class="building-header">
+                                    <span class="building-name">赞美太阳</span>
+                                </div>
+                                <div class="building-desc">消耗信仰获得永久加成</div>
+                                <button class="btn btn-primary btn-small" style="margin-top: 8px;" id="btn-praise-sun" onclick="praiseSun()" disabled>赞美</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar-right">
+                <div class="panel">
+                    <h2>事件日志</h2>
+                    <div class="log-panel" id="log-panel">
+                        <div class="log-entry">欢迎来到猫国建设者！</div>
+                        <div class="log-entry">点击采集猫薄荷开始游戏。</div>
+                    </div>
+                </div>
+                
+                <div class="panel" style="margin-top: 16px;">
+                    <h2>季节</h2>
+                    <div id="season-info">
+                        <div class="resource-item">
+                            <span class="resource-name">当前季节</span>
+                            <span class="resource-value" id="current-season">春季</span>
+                        </div>
+                        <div class="resource-item">
+                            <span class="resource-name">猫薄荷加成</span>
+                            <span class="resource-value" id="season-bonus">+0%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="panel" style="margin-top: 16px;">
+                    <h2>轮回</h2>
+                    <div id="paragon-info">
+                        <div class="resource-item">
+                            <span class="resource-name">当前轮回</span>
+                            <span class="resource-value" id="current-run">1</span>
+                        </div>
+                        <div class="resource-item">
+                            <span class="resource-name">领导力</span>
+                            <span class="resource-value" id="paragon-count">0</span>
+                        </div>
+                        <div class="resource-item">
+                            <span class="resource-name">业</span>
+                            <span class="resource-value" id="karma-count">0</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-black btn-small" style="margin-top: 12px; width: 100%;" id="btn-reset-game" onclick="prestige()" disabled>重置轮回</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        // 游戏变量
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const scoreElement = document.getElementById('score');
-        const timeElement = document.getElementById('time');
-        const gameOverElement = document.getElementById('gameOver');
-        const finalScoreElement = document.getElementById('finalScore');
+        const gameState = {
+            resources: {
+                catnip: 0,
+                wood: 0,
+                minerals: 0,
+                coal: 0,
+                iron: 0,
+                titanium: 0,
+                furs: 0,
+                parchment: 0,
+                culture: 0,
+                faith: 0,
+                megalith: 0,
+                science: 0
+            },
+            buildings: {
+                catnipField: 0,
+                hut: 0,
+                library: 0,
+                theatre: 0,
+                workshop: 0,
+                mine: 0,
+                temple: 0
+            },
+            jobs: {
+                woodcutter: 0,
+                scholar: 0,
+                hunter: 0,
+                miner: 0,
+                priest: 0
+            },
+            technologies: {
+                agriculture: false,
+                forestry: false,
+                animalHusbandry: false,
+                mining: false,
+                architecture: false,
+                alchemy: false
+            },
+            cats: 0,
+            maxCats: 0,
+            happiness: 100,
+            paragon: 0,
+            karma: 0,
+            run: 1,
+            season: 0,
+            seasonTimer: 0,
+            sunBonus: 0
+        };
 
-        let score = 0;
-        let time = 60;
-        let gameInterval;
-        let mouseInterval;
-        let cats = [];
-        let mice = [];
-        let gameRunning = false;
+        const seasons = ['春季', '夏季', '秋季', '冬季'];
+        const seasonBonuses = [0, 50, 0, -25];
 
-        // 猫的类
-        class Cat {
-            constructor() {
-                this.x = Math.random() * (canvas.width - 50);
-                this.y = Math.random() * (canvas.height - 50);
-                this.size = 50;
-                this.speed = 2;
-                this.directionX = Math.random() > 0.5 ? 1 : -1;
-                this.directionY = Math.random() > 0.5 ? 1 : -1;
+        const buildingCosts = {
+            catnipField: { catnip: 10 },
+            hut: { wood: 25 },
+            library: { wood: 50, parchment: 25 },
+            theatre: { wood: 100, minerals: 50 },
+            workshop: { wood: 75 },
+            mine: { wood: 100 },
+            temple: { wood: 500, minerals: 250, megalith: 5 }
+        };
+
+        const techCosts = {
+            agriculture: 100,
+            forestry: 150,
+            animalHusbandry: 200,
+            mining: 300,
+            architecture: 400,
+            alchemy: 500
+        };
+
+        function gatherCatnip() {
+            const bonus = gameState.paragon * 0.01;
+            const seasonBonus = seasonBonuses[gameState.season] / 100;
+            const amount = 1 * (1 + bonus + seasonBonus);
+            gameState.resources.catnip += amount;
+            addLog(`采集了 ${formatNumber(amount)} 猫薄荷`);
+            updateUI();
+        }
+
+        function chopWood() {
+            if (gameState.resources.catnip >= 100) {
+                gameState.resources.catnip -= 100;
+                gameState.resources.wood += 1;
+                addLog('砍伐了 1 木材');
+                updateUI();
             }
+        }
 
-            update() {
-                // 移动猫
-                this.x += this.speed * this.directionX;
-                this.y += this.speed * this.directionY;
-
-                // 边界检测
-                if (this.x <= 0 || this.x >= canvas.width - this.size) {
-                    this.directionX *= -1;
+        function build(type) {
+            const cost = buildingCosts[type];
+            let canBuild = true;
+            
+            for (const [resource, amount] of Object.entries(cost)) {
+                if (gameState.resources[resource] < amount) {
+                    canBuild = false;
+                    break;
                 }
-                if (this.y <= 0 || this.y >= canvas.height - this.size) {
-                    this.directionY *= -1;
+            }
+            
+            if (canBuild) {
+                for (const [resource, amount] of Object.entries(cost)) {
+                    gameState.resources[resource] -= amount;
                 }
+                gameState.buildings[type]++;
+                
+                if (type === 'hut') {
+                    gameState.maxCats += 2;
+                }
+                
+                addLog(`建造了一个${getBuildingName(type)}`);
+                updateUI();
+            }
+        }
 
-                // 检测是否捉到老鼠
-                for (let i = mice.length - 1; i >= 0; i--) {
-                    const mouse = mice[i];
-                    if (this.x < mouse.x + mouse.size &&
-                        this.x + this.size > mouse.x &&
-                        this.y < mouse.y + mouse.size &&
-                        this.y + this.size > mouse.y) {
-                        // 捉到老鼠，增加分数
-                        score += 10;
-                        scoreElement.textContent = score;
-                        // 移除被捉到的老鼠
-                        mice.splice(i, 1);
+        function getBuildingName(type) {
+            const names = {
+                catnipField: '猫薄荷田',
+                hut: '帐篷',
+                library: '图书馆',
+                theatre: '剧场',
+                workshop: '工作台',
+                mine: '矿井',
+                temple: '庙塔'
+            };
+            return names[type] || type;
+        }
+
+        function assignJob(job, delta) {
+            const freeCats = gameState.cats - Object.values(gameState.jobs).reduce((a, b) => a + b, 0);
+            
+            if (delta > 0 && freeCats > 0) {
+                gameState.jobs[job]++;
+            } else if (delta < 0 && gameState.jobs[job] > 0) {
+                gameState.jobs[job]--;
+            }
+            
+            updateUI();
+        }
+
+        function research(tech) {
+            if (gameState.resources.science >= techCosts[tech] && !gameState.technologies[tech]) {
+                gameState.resources.science -= techCosts[tech];
+                gameState.technologies[tech] = true;
+                addLog(`研究完成: ${getTechName(tech)}`);
+                updateUI();
+            }
+        }
+
+        function getTechName(tech) {
+            const names = {
+                agriculture: '农业',
+                forestry: '林业',
+                animalHusbandry: '畜牧业',
+                mining: '矿业',
+                architecture: '建筑学',
+                alchemy: '炼金术'
+            };
+            return names[tech] || tech;
+        }
+
+        function craft(type) {
+            if (type === 'wood' && gameState.resources.catnip >= 100) {
+                gameState.resources.catnip -= 100;
+                gameState.resources.wood += 1;
+                addLog('制作了 1 木材');
+            } else if (type === 'parchment' && gameState.resources.furs >= 25) {
+                gameState.resources.furs -= 25;
+                gameState.resources.parchment += 1;
+                addLog('制作了 1 羊皮纸');
+            } else if (type === 'megalith' && gameState.resources.minerals >= 250) {
+                gameState.resources.minerals -= 250;
+                gameState.resources.megalith += 1;
+                addLog('制作了 1 巨石');
+            }
+            updateUI();
+        }
+
+        function trade(type) {
+            if (type === 'zebra' && gameState.resources.wood >= 500) {
+                gameState.resources.wood -= 500;
+                if (Math.random() < 0.3) {
+                    gameState.resources.titanium += 1;
+                    addLog('交易成功，获得 1 钛！');
+                } else {
+                    addLog('交易完成，但没获得钛');
+                }
+            }
+            updateUI();
+        }
+
+        function praiseSun() {
+            if (gameState.resources.faith >= 1000) {
+                gameState.sunBonus += gameState.resources.faith / 100;
+                gameState.resources.faith = 0;
+                addLog('赞美太阳！获得永久加成');
+                updateUI();
+            }
+        }
+
+        function prestige() {
+            if (gameState.cats >= 70) {
+                const newParagon = gameState.cats - 70;
+                const newKarma = Math.floor(Math.max(0, gameState.cats - 35) / 10);
+                
+                gameState.paragon += newParagon;
+                gameState.karma += newKarma;
+                gameState.run++;
+                
+                gameState.resources = {
+                    catnip: 0, wood: 0, minerals: 0, coal: 0,
+                    iron: 0, titanium: 0, furs: 0, parchment: 0,
+                    culture: 0, faith: 0, megalith: 0, science: 0
+                };
+                gameState.buildings = {
+                    catnipField: 0, hut: 0, library: 0, theatre: 0,
+                    workshop: 0, mine: 0, temple: 0
+                };
+                gameState.jobs = {
+                    woodcutter: 0, scholar: 0, hunter: 0, miner: 0, priest: 0
+                };
+                gameState.cats = 0;
+                gameState.maxCats = 0;
+                gameState.happiness = 100;
+                
+                addLog(`轮回完成！获得 ${newParagon} 领导力, ${newKarma} 业`);
+                updateUI();
+            }
+        }
+
+        function gameLoop() {
+            const paragonBonus = 1 + gameState.paragon * 0.01;
+            const seasonBonus = 1 + seasonBonuses[gameState.season] / 100;
+            
+            gameState.resources.catnip += gameState.buildings.catnipField * 0.1 * seasonBonus * paragonBonus;
+            
+            if (gameState.technologies.agriculture) {
+                gameState.resources.catnip += gameState.buildings.catnipField * 0.05 * seasonBonus * paragonBonus;
+            }
+            
+            gameState.resources.wood += gameState.jobs.woodcutter * 0.02 * paragonBonus;
+            gameState.resources.science += gameState.jobs.scholar * 0.1 * paragonBonus;
+            gameState.resources.furs += gameState.jobs.hunter * 0.01 * paragonBonus;
+            gameState.resources.minerals += gameState.jobs.miner * 0.05 * paragonBonus;
+            gameState.resources.faith += gameState.jobs.priest * 0.1 * paragonBonus;
+            
+            if (gameState.buildings.temple > 0) {
+                gameState.resources.culture += gameState.buildings.temple * 0.01;
+            }
+            
+            gameState.seasonTimer++;
+            if (gameState.seasonTimer >= 100) {
+                gameState.seasonTimer = 0;
+                gameState.season = (gameState.season + 1) % 4;
+                addLog(`季节变化: ${seasons[gameState.season]}`);
+            }
+            
+            const freeCats = gameState.maxCats - gameState.cats;
+            if (freeCats > 0 && gameState.resources.catnip > 100) {
+                if (Math.random() < 0.01) {
+                    gameState.cats++;
+                    gameState.resources.catnip -= 100;
+                    addLog('一只新的猫咪加入了你的王国！');
+                }
+            }
+            
+            if (gameState.cats > 5) {
+                gameState.happiness = Math.max(50, 100 - (gameState.cats - 5) * 2 + gameState.buildings.theatre * 5);
+            }
+            
+            updateUI();
+        }
+
+        function updateUI() {
+            document.getElementById('res-catnip').textContent = formatNumber(gameState.resources.catnip);
+            document.getElementById('res-wood').textContent = formatNumber(gameState.resources.wood);
+            document.getElementById('res-minerals').textContent = formatNumber(gameState.resources.minerals);
+            document.getElementById('res-coal').textContent = formatNumber(gameState.resources.coal);
+            document.getElementById('res-iron').textContent = formatNumber(gameState.resources.iron);
+            document.getElementById('res-titanium').textContent = formatNumber(gameState.resources.titanium);
+            document.getElementById('res-furs').textContent = formatNumber(gameState.resources.furs);
+            document.getElementById('res-parchment').textContent = formatNumber(gameState.resources.parchment);
+            document.getElementById('res-culture').textContent = formatNumber(gameState.resources.culture);
+            document.getElementById('res-faith').textContent = formatNumber(gameState.resources.faith);
+            
+            document.getElementById('stat-cats').textContent = gameState.cats;
+            document.getElementById('stat-happiness').textContent = Math.round(gameState.happiness) + '%';
+            document.getElementById('stat-science').textContent = formatNumber(Math.floor(gameState.resources.science));
+            document.getElementById('stat-paragon').textContent = gameState.paragon;
+            
+            document.getElementById('bld-catnipField').textContent = gameState.buildings.catnipField;
+            document.getElementById('bld-hut').textContent = gameState.buildings.hut;
+            document.getElementById('bld-library').textContent = gameState.buildings.library;
+            document.getElementById('bld-theatre').textContent = gameState.buildings.theatre;
+            document.getElementById('bld-workshop').textContent = gameState.buildings.workshop;
+            document.getElementById('bld-mine').textContent = gameState.buildings.mine;
+            document.getElementById('bld-temple').textContent = gameState.buildings.temple;
+            
+            document.getElementById('job-woodcutter').textContent = gameState.jobs.woodcutter;
+            document.getElementById('job-scholar').textContent = gameState.jobs.scholar;
+            document.getElementById('job-hunter').textContent = gameState.jobs.hunter;
+            document.getElementById('job-miner').textContent = gameState.jobs.miner;
+            document.getElementById('job-priest').textContent = gameState.jobs.priest;
+            
+            document.getElementById('total-cats').textContent = gameState.cats;
+            document.getElementById('max-cats').textContent = gameState.maxCats;
+            
+            document.getElementById('current-science').textContent = formatNumber(Math.floor(gameState.resources.science));
+            document.getElementById('current-faith').textContent = formatNumber(Math.floor(gameState.resources.faith));
+            
+            document.getElementById('current-season').textContent = seasons[gameState.season];
+            document.getElementById('season-bonus').textContent = (seasonBonuses[gameState.season] >= 0 ? '+' : '') + seasonBonuses[gameState.season] + '%';
+            
+            document.getElementById('current-run').textContent = gameState.run;
+            document.getElementById('paragon-count').textContent = gameState.paragon;
+            document.getElementById('karma-count').textContent = gameState.karma;
+            
+            const catnipRate = gameState.buildings.catnipField * 0.1 * (1 + seasonBonuses[gameState.season] / 100);
+            document.getElementById('rate-catnip').textContent = '+' + formatNumber(catnipRate);
+            document.getElementById('rate-wood').textContent = '+' + formatNumber(gameState.jobs.woodcutter * 0.02);
+            document.getElementById('rate-science').textContent = '+' + formatNumber(gameState.jobs.scholar * 0.1);
+            
+            document.getElementById('btn-chop-wood').disabled = gameState.resources.catnip < 100;
+            document.getElementById('btn-build-library').disabled = gameState.resources.wood < 50 || gameState.resources.parchment < 25;
+            document.getElementById('btn-build-theatre').disabled = gameState.resources.wood < 100 || gameState.resources.minerals < 50;
+            document.getElementById('btn-build-mine').disabled = gameState.resources.wood < 100 || !gameState.technologies.mining;
+            document.getElementById('btn-build-temple').disabled = gameState.resources.wood < 500 || gameState.resources.minerals < 250 || gameState.resources.megalith < 5;
+            
+            document.getElementById('btn-craft-parchment').disabled = gameState.resources.furs < 25 || gameState.buildings.workshop < 1;
+            document.getElementById('btn-craft-megalith').disabled = gameState.resources.minerals < 250 || gameState.buildings.workshop < 1;
+            
+            document.getElementById('btn-trade-zebra').disabled = gameState.resources.wood < 500;
+            
+            document.getElementById('btn-praise-sun').disabled = gameState.resources.faith < 1000 || gameState.buildings.temple < 1;
+            
+            document.getElementById('btn-reset-game').disabled = gameState.cats < 70;
+            
+            updateTechStatus();
+        }
+
+        function updateTechStatus() {
+            for (const tech of Object.keys(gameState.technologies)) {
+                const statusEl = document.getElementById(`tech-${tech}-status`);
+                if (statusEl) {
+                    if (gameState.technologies[tech]) {
+                        statusEl.textContent = '已解锁';
+                        statusEl.classList.add('unlocked');
+                    } else {
+                        statusEl.textContent = '未解锁';
+                        statusEl.classList.remove('unlocked');
                     }
                 }
             }
+        }
 
-            draw() {
-                // 绘制猫
-                ctx.fillStyle = '#FF6347';
-                ctx.fillRect(this.x, this.y, this.size, this.size);
-                // 绘制猫的眼睛
-                ctx.fillStyle = 'white';
-                ctx.beginPath();
-                ctx.arc(this.x + 15, this.y + 15, 5, 0, Math.PI * 2);
-                ctx.arc(this.x + 35, this.y + 15, 5, 0, Math.PI * 2);
-                ctx.fill();
-                // 绘制猫的瞳孔
-                ctx.fillStyle = 'black';
-                ctx.beginPath();
-                ctx.arc(this.x + 15, this.y + 15, 2, 0, Math.PI * 2);
-                ctx.arc(this.x + 35, this.y + 15, 2, 0, Math.PI * 2);
-                ctx.fill();
-                // 绘制猫的嘴
-                ctx.beginPath();
-                ctx.arc(this.x + 25, this.y + 35, 5, 0, Math.PI);
-                ctx.stroke();
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(`section-${tabName}`).classList.add('active');
+        }
+
+        function addLog(message) {
+            const logPanel = document.getElementById('log-panel');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.textContent = message;
+            logPanel.insertBefore(entry, logPanel.firstChild);
+            
+            if (logPanel.children.length > 50) {
+                logPanel.removeChild(logPanel.lastChild);
             }
         }
 
-        // 老鼠的类
-        class Mouse {
-            constructor() {
-                this.x = Math.random() * (canvas.width - 30);
-                this.y = Math.random() * (canvas.height - 30);
-                this.size = 30;
-                this.speed = 1;
-                this.directionX = Math.random() > 0.5 ? 1 : -1;
-                this.directionY = Math.random() > 0.5 ? 1 : -1;
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(2) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(2) + 'K';
             }
+            return Math.floor(num).toString();
+        }
 
-            update() {
-                // 移动老鼠
-                this.x += this.speed * this.directionX;
-                this.y += this.speed * this.directionY;
+        function saveGame() {
+            localStorage.setItem('catGame', JSON.stringify(gameState));
+            addLog('游戏已保存');
+        }
 
-                // 边界检测
-                if (this.x <= 0 || this.x >= canvas.width - this.size) {
-                    this.directionX *= -1;
-                }
-                if (this.y <= 0 || this.y >= canvas.height - this.size) {
-                    this.directionY *= -1;
-                }
-            }
-
-            draw() {
-                // 绘制老鼠
-                ctx.fillStyle = '#8B4513';
-                ctx.fillRect(this.x, this.y, this.size, this.size);
-                // 绘制老鼠的耳朵
-                ctx.beginPath();
-                ctx.moveTo(this.x + 5, this.y);
-                ctx.lineTo(this.x, this.y - 10);
-                ctx.lineTo(this.x + 10, this.y);
-                ctx.moveTo(this.x + 20, this.y);
-                ctx.lineTo(this.x + 15, this.y - 10);
-                ctx.lineTo(this.x + 25, this.y);
-                ctx.fill();
-                // 绘制老鼠的眼睛
-                ctx.fillStyle = 'white';
-                ctx.beginPath();
-                ctx.arc(this.x + 10, this.y + 10, 3, 0, Math.PI * 2);
-                ctx.arc(this.x + 20, this.y + 10, 3, 0, Math.PI * 2);
-                ctx.fill();
-                // 绘制老鼠的瞳孔
-                ctx.fillStyle = 'black';
-                ctx.beginPath();
-                ctx.arc(this.x + 10, this.y + 10, 1, 0, Math.PI * 2);
-                ctx.arc(this.x + 20, this.y + 10, 1, 0, Math.PI * 2);
-                ctx.fill();
-                // 绘制老鼠的尾巴
-                ctx.beginPath();
-                ctx.moveTo(this.x + 15, this.y + 30);
-                ctx.lineTo(this.x + 15, this.y + 40);
-                ctx.lineTo(this.x + 20, this.y + 35);
-                ctx.stroke();
+        function loadGame() {
+            const saved = localStorage.getItem('catGame');
+            if (saved) {
+                const loaded = JSON.parse(saved);
+                Object.assign(gameState, loaded);
+                addLog('游戏已读取');
+                updateUI();
+            } else {
+                addLog('没有找到存档');
             }
         }
 
-        // 初始化游戏
-        function initGame() {
-            score = 0;
-            time = 60;
-            scoreElement.textContent = score;
-            timeElement.textContent = time;
-            gameOverElement.style.display = 'none';
-            cats = [];
-            mice = [];
-            gameRunning = true;
-
-            // 创建2只猫
-            for (let i = 0; i < 2; i++) {
-                cats.push(new Cat());
-            }
-
-            // 创建5只老鼠
-            for (let i = 0; i < 5; i++) {
-                mice.push(new Mouse());
-            }
-
-            // 开始游戏循环
-            gameInterval = setInterval(gameLoop, 1000 / 60);
-
-            // 开始计时器
-            const timerInterval = setInterval(() => {
-                time--;
-                timeElement.textContent = time;
-                if (time <= 0) {
-                    clearInterval(timerInterval);
-                    endGame();
-                }
-            }, 1000);
-
-            // 定期生成老鼠
-            mouseInterval = setInterval(() => {
-                if (mice.length < 10) {
-                    mice.push(new Mouse());
-                }
-            }, 2000);
-        }
-
-        // 游戏循环
-        function gameLoop() {
-            if (!gameRunning) return;
-
-            // 清空画布
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // 更新和绘制猫
-            for (const cat of cats) {
-                cat.update();
-                cat.draw();
-            }
-
-            // 更新和绘制老鼠
-            for (const mouse of mice) {
-                mouse.update();
-                mouse.draw();
+        function resetGame() {
+            if (confirm('确定要重置游戏吗？所有进度将丢失！')) {
+                localStorage.removeItem('catGame');
+                location.reload();
             }
         }
 
-        // 结束游戏
-        function endGame() {
-            gameRunning = false;
-            clearInterval(gameInterval);
-            clearInterval(mouseInterval);
-            finalScoreElement.textContent = score;
-            gameOverElement.style.display = 'block';
-        }
-
-        // 重新开始游戏
-        function restartGame() {
-            initGame();
-        }
-
-        // 点击画布开始游戏
-        canvas.addEventListener('click', () => {
-            if (!gameRunning) {
-                initGame();
-            }
-        });
-
-        // 初始显示游戏说明
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = 'white';
-        ctx.font = '24px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText('点击画布开始游戏', canvas.width / 2, canvas.height / 2);
-        ctx.font = '16px Arial';
-        ctx.fillText('使用鼠标控制猫移动，捉到老鼠获得分数', canvas.width / 2, canvas.height / 2 + 40);
-        ctx.fillText('游戏时间为60秒，看你能得多少分！', canvas.width / 2, canvas.height / 2 + 70);
+        setInterval(gameLoop, 100);
+        setInterval(saveGame, 30000);
+        
+        updateUI();
     </script>
 </body>
 </html>
