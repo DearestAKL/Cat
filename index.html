@@ -702,45 +702,7 @@
 				</div>
 			</div>
 
-			<div id="footerLinks" class="links-block">
-				<a href="https://petercheney.gitee.io/baike/?file=%E9%A6%96%E9%A1%B5" target="_blank" title="猫国百科全书">百科（中文wiki）</a> |
-				<a class="chatLink" href="//shang.qq.com/wpa/qunwpa?idkey=2b9f0b27b1aabbce582429184ec05344fa384f59bf410f44071f42b271866338" target="_blank" title="点击加入猫薄荷同好会QQ群：499256691">Q群</a> |
-				<!-- <a href="http://kittensgame.tumblr.com" target="_blank">tumblr</a> | -->
-				<!-- <a href="#" onclick="$('#helpDiv').toggle();">help</a> | -->
-				<a href="#" onclick="$('#creditsDiv').toggle();">人员</a> |
 
-				<body>
-					<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=82FJX5M8M3GVN" target="_blank">捐赠</a> |
-					<script type="text/javascript">
-						var paragonWebsite = function() {
-							if (typeof gamePage === "undefined") {
-								setTimeout(paragonWebsite, 10000);
-							} else {
-								var a = document.getElementsByTagName("a");
-								var b = game.prestige.getParagonStorageRatio();
-								var c = game.resPool.get('timeCrystal').value;
-								var d = game.religion.getTU("blackObelisk").val;
-								var e = localStorage['zh.ks.enable'];
-								if (b > 2.5 && c > 2e5 && d > 55 && e == 'enable') {
-									for (var i = a.length - 1; i > 0; i--) {
-										if (a[i].href == "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=82FJX5M8M3GVN") {
-											a[i].href = a[i].href.replace("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=82FJX5M8M3GVN", "https://lolitalibrary.com/maoguo/index.html");
-											a[i].innerHTML = a[i].innerHTML.replace('捐赠', '自动刷领导力');
-											a[i].title = "Cheney的网站需要自己导入存档哦";
-											break;
-										}
-									}
-								} else {
-									setTimeout(paragonWebsite, 10000);
-								}
-							}
-						}
-						paragonWebsite();
-					</script>
-				</body>
-				<a href="https://www.patreon.com/bloodrizer" target="_blank">支持</a>
-				<!--  | <a href="classic/" target="_blank">classic</a> -->
-			</div>
 		</div>
 		<div id="changeDiv" style="display: none;" align="center" class="dialog help">
 				<a id="changeDialogClose" href="#" class="close" style="position: absolute; top: 10px; right: 15px;">close</a>
