@@ -9,6 +9,15 @@
 
 		<link rel="shortcut icon" href="res/favicon.gif" type="image/x-icon">
 
+		<!-- SF Pro Font -->
+		<style>
+			@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+			
+			body {
+				font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+			}
+		</style>
+
 		<!-- I only use jquery ironically -->
 
 		<script src="lib/react.min.js"></script>
@@ -287,7 +296,14 @@
 			}
 			// we don't need no css, let the dynamic height be. be, dynamic height, be.
 			function resetGameLogHeight() {
-				$("#devPanel").outerHeight($("#footerLinks").position().top - $("#gameLog").offset().top);
+				try {
+					var footerLinks = $("#footerLinks");
+					if (footerLinks.length > 0) {
+						$("#devPanel").outerHeight(footerLinks.position().top - $("#gameLog").offset().top);
+					}
+				} catch (e) {
+					// Ignore error if footerLinks doesn't exist
+				}
 			}
 			$(resetGameLogHeight);
 			$(window).resize(resetGameLogHeight);
@@ -318,8 +334,7 @@
 
 					<span style="font-size: small;">
 						<a href="http://kittensgame.com/beta" title="测试版本" target="_blank">&beta;</a>
-						<a href="http://kittensgame.com/web" title="国外英文官网版本" target="_blank"><strong>ML</strong></a>
-						<a href="https://likexia.gitee.io/cat-zh/" title="国内阳光搬运" target="_blank"><strong>&Iota;</strong></a>
+
 					</span>
 				</div>
 
@@ -344,14 +359,14 @@
 					<span id="saveTooltip" style="padding-right: 15px; font-size: 12px; opacity: 0;">Saved!</span>
 				</div>
 
-				<div class="links-block" style="padding-top:3px; display:inline-flex;">
-					<a id="save-link" href="#" onclick="gamePage.saveUI();"  title="本地保存在浏览器缓存里" >Save</a> |
-					<a id="options-link" href="#" onclick="$('#optionsDiv').toggle();">Options</a> |
+				<div class="links-block" style="padding-top:3px; display:inline-flex; gap: 15px;">
+					<a id="save-link" href="#" onclick="gamePage.saveUI();"  title="本地保存在浏览器缓存里" >Save</a>
+					<a id="options-link" href="#" onclick="$('#optionsDiv').toggle();">Options</a>
 
-					<a id="reset-link" href="#" onclick="gamePage.reset();">Reset</a> |
-					<span id="devModeButton" style="display: none;"><a href="#" id="devBtn" onclick="dev();">DEV</a> |</span>
-					<a id="wipe-link" href="#" onclick="wipe();">Wipe</a> |
-					<a id="getTheApp-link" href="#" onclick="gamePage.ui.displayAppDialog();" style="font-weight: bold; color:#666;">Get the app</a> |
+					<a id="reset-link" href="#" onclick="gamePage.reset();">Reset</a>
+					<span id="devModeButton" style="display: none;"><a href="#" id="devBtn" onclick="dev();">DEV</a></span>
+					<a id="wipe-link" href="#" onclick="wipe();">Wipe</a>
+
 					<a href="changelog.html" target="_blank">Ver <span id="versionLink">?.?.?.?</span></a>
 					<a href="#" id="newVersion" onclick="gamePage.reload();" title="有新版本 !" style="display:none">↻</a>
 				</div>
@@ -382,23 +397,23 @@
 						&nbsp;加载中...
 					</div>
 					<div id="gameContainerId" style="border: 1px solid gray;">
-						<div id="gameContainerHelp" style="font-size:150%;">
-							看起来游戏错误。别担心试试这几个办法。<br>
-							<ul>
-								<li>确保启用了JavaScript 或者 广告插件 不在工作。</li>
-								<li>使用 Ctrl+F5 强制刷新。</li>
-								<li>过十几分中后再打开游戏。.</li>
-								<li>导出你的存档，保存好，清空游戏数据，再重新导入存档。
-									<ul>
-										<li>按下F12 会有弹窗，</li>
-										<li>点击"Console"（控制台），</li>
-										<li>截图 （红色字体），</li>
-										<li>请点击<a href="https://jq.qq.com/?_wv=1027&k=47jg387">这个链接</a>加入同好会。</li>
-									</ul>
-								</li>
-							</ul>
-						</div>
+					<div id="gameContainerHelp" style="font-size:150%; display: none;">
+						看起来游戏错误。别担心试试这几个办法。<br>
+						<ul>
+							<li>确保启用了JavaScript 或者 广告插件 不在工作。</li>
+							<li>使用 Ctrl+F5 强制刷新。</li>
+							<li>过十几分中后再打开游戏。.</li>
+							<li>导出你的存档，保存好，清空游戏数据，再重新导入存档。
+								<ul>
+									<li>按下F12 会有弹窗，</li>
+									<li>点击"Console"（控制台），</li>
+									<li>截图 （红色字体），</li>
+									<li>请点击<a href="https://jq.qq.com/?_wv=1027&k=47jg387">这个链接</a>加入同好会。</li>
+								</ul>
+							</li>
+						</ul>
 					</div>
+				</div>
 				</div>
 
 				<!-- RIGHT -->
@@ -409,7 +424,6 @@
 					</div>
 					<div class="right-tab-header">
 						<a id="logLink" href="#" class="active" onclick="gamePage.ui.hideChat();">Log</a>
-						<a id="chatLink" class="chatLink" href="//shang.qq.com/wpa/qunwpa?idkey=2b9f0b27b1aabbce582429184ec05344fa384f59bf410f44071f42b271866338" target="_blank" title="点击加入猫薄荷同好会QQ群：499256691">聊天</a>
 					</div>
 					<div id="observeButton"></div>
 					<div class="right-tab" id="rightTabLog">
@@ -704,35 +718,9 @@
 
 
 		</div>
-		<div id="changeDiv" style="display: none;" align="center" class="dialog help">
-				<a id="changeDialogClose" href="#" class="close" style="position: absolute; top: 10px; right: 15px;">close</a>
-				<div style="font-weight: bold; color:#666;">猫国建设者</div>
-				<hr>
-				<div>
-					<br>
-					<span style="display: block;">链接[<a href="https://petercheney.gitee.io/baike/" target="_blank" title="猫国百科全书">百科</a>]</span>
-					<span style="display: block;">链接[<a href="https://petercheney.gitee.io/baike/?file=004-第三方工具/02-小猫科学家" target="_blank" title="猫国百科全书">小猫珂学家说明书</a>]</span>
-					<span>如果是从likexia点说明书过来的。<br>请在likexia保存按下F5刷新一下。<i>页面可能被缓存了</i></span>
-					<br>
-					<span>链接[<a href="https://likexia.gitee.io/cat-zh/" target="_blank" title="游戏地址">最新版猫国建设者</a>]</span>
-					
-				</div>
-			</div>
-		<!--客服 开始-->
-		<link rel="stylesheet" href="res/kf.css" type="text/css" media="screen" charset="utf-8">
-		<script src="kf.js"></script>
-		<style>
-			.boostType {
-				font-size: 3vh;
-			}
-		</style>
-		<!-- 客服 结束 -->
 
 		<script type="text/javascript">
-		setTimeout(function() {
-						game.ui.showDialog("changeDiv");
-					}, 4000);
-			var enableKS = function() {
+		var enableKS = function() {
 				localStorage['zh.ks.enable'] = 'enable';
 				$("#ks-label").text("可爱的猫猫科学家为您服务");
 				$("#set-ks-enable").attr("checked", true);
@@ -802,6 +790,37 @@
 				}
 			};
 			_282d5adfdca92885cd9f210a9b60a328();
+		
+		// 页签切换功能
+		$(document).ready(function() {
+			// 一级页签切换
+			$('.primary-tab').click(function() {
+				// 移除所有一级页签的active类
+				$('.primary-tab').removeClass('active');
+				// 添加当前页签的active类
+				$(this).addClass('active');
+				
+				// 这里可以添加根据一级页签切换内容的逻辑
+				// 例如加载不同的二级页签和元素列表
+			});
+			
+			// 二级页签切换
+			$('.secondary-tab').click(function() {
+				// 移除所有二级页签的active类
+				$('.secondary-tab').removeClass('active');
+				// 添加当前页签的active类
+				$(this).addClass('active');
+				
+				// 这里可以添加根据二级页签切换元素列表的逻辑
+			});
+			
+			// 元素项点击事件
+			$('.element-item').click(function() {
+				// 这里可以添加点击元素项后的逻辑
+				// 例如打开详情页或执行相应操作
+				alert('点击了元素: ' + $(this).find('.element-name').text());
+			});
+		});
 		</script>
 
 	</body>

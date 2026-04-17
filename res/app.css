@@ -1,10 +1,11 @@
-@media screen and (max-width: 640px) {
+/* Mobile Small (< 360px) */
+@media screen and (max-width: 360px) {
 	html, body {
 		overflow-y: auto;
 	}
-	.help{width: 100%;}
-	#topBar{width: 100%;min-width: auto;}
-	#gamePageContainer{height: 100%;width: 100%;}
+	.help { width: 100%; }
+	#topBar { width: 100%; min-width: auto; }
+	#gamePageContainer { height: 100%; width: 100%; }
 
 	#game, #gamePageContainer, #topBar {
 		max-width: 100%;
@@ -13,29 +14,187 @@
 		bottom: auto;
 		width: 100%;
 	}
-	#headerLinks {}
+	
 	#leftColumn, #midColumn, #rightColumn {
 		width: 100%;
 		margin: 0;
-		padding: 0;
+		padding: 10px;
 		min-height: auto;
 		min-width: auto;
 		max-width: 100%;
 	}
-	#leftColumn {}
-	#midColumn {}
-	.btn.modern{width: 100px;}
-	#rightColumn {top: auto;}
+	
 	.column {
 		display: block;
 		width: 100%;
 		position: relative;
 		overflow: auto;
+		margin-top: 10px;
 	}
+	
+	.btn {
+		width: 100%;
+		max-width: 200px;
+		margin: 0 auto 10px;
+	}
+}
 
-	#footerLinks {
-		/*position: relative;
+/* Mobile (360px - 480px) */
+@media screen and (min-width: 360px) and (max-width: 480px) {
+	html, body {
+		overflow-y: auto;
+	}
+	.help { width: 100%; }
+	#topBar { width: 100%; min-width: auto; }
+	#gamePageContainer { height: 100%; width: 100%; }
+
+	#game, #gamePageContainer, #topBar {
+		max-width: 100%;
+		position: relative;
+		top: auto;
 		bottom: auto;
-		right: auto;*/
+		width: 100%;
+	}
+	
+	#leftColumn, #midColumn, #rightColumn {
+		width: 100%;
+		margin: 0;
+		padding: 15px;
+		min-height: auto;
+		min-width: auto;
+		max-width: 100%;
+	}
+	
+	.column {
+		display: block;
+		width: 100%;
+		position: relative;
+		overflow: auto;
+		margin-top: 15px;
+	}
+	
+	.btn {
+		width: 100%;
+		max-width: 250px;
+		margin: 0 auto 10px;
+	}
+}
+
+/* Mobile Large (480px - 640px) */
+@media screen and (min-width: 480px) and (max-width: 640px) {
+	html, body {
+		overflow-y: auto;
+	}
+	.help { width: 100%; }
+	#topBar { width: 100%; min-width: auto; }
+	#gamePageContainer { height: 100%; width: 100%; }
+
+	#game, #gamePageContainer, #topBar {
+		max-width: 100%;
+		position: relative;
+		top: auto;
+		bottom: auto;
+		width: 100%;
+	}
+	
+	#leftColumn, #midColumn, #rightColumn {
+		width: 100%;
+		margin: 0;
+		padding: 15px;
+		min-height: auto;
+		min-width: auto;
+		max-width: 100%;
+	}
+	
+	.column {
+		display: block;
+		width: 100%;
+		position: relative;
+		overflow: auto;
+		margin-top: 15px;
+	}
+	
+	.btn.modern { width: 120px; }
+}
+
+/* Tablet Small (640px - 834px) */
+@media screen and (min-width: 640px) and (max-width: 834px) {
+	#gamePageContainer {
+		max-width: 100%;
+		padding: 0 15px;
+	}
+	
+	#leftColumn {
+		width: 30%;
+		max-width: 300px;
+		min-width: 250px;
+	}
+	
+	#midColumn {
+		width: 65%;
+		max-width: 500px;
+	}
+	
+	#rightColumn {
+		display: none;
+	}
+	
+	.column {
+		display: inline-block;
+		vertical-align: top;
+	}
+}
+
+/* Tablet (834px - 1024px) */
+@media screen and (min-width: 834px) and (max-width: 1024px) {
+	#gamePageContainer {
+		max-width: 100%;
+		padding: 0 20px;
+	}
+	
+	#leftColumn {
+		width: 25%;
+		max-width: 350px;
+		min-width: 280px;
+	}
+	
+	#midColumn {
+		width: 45%;
+		max-width: 450px;
+	}
+	
+	#rightColumn {
+		width: 25%;
+		max-width: 300px;
+		min-width: 250px;
+	}
+	
+	.column {
+		display: inline-block;
+		vertical-align: top;
+	}
+}
+
+/* Desktop Small (1024px - 1070px) */
+@media screen and (min-width: 1024px) and (max-width: 1070px) {
+	#gamePageContainer {
+		max-width: 1000px;
+		padding: 0 20px;
+	}
+}
+
+/* Desktop (1070px - 1440px) */
+@media screen and (min-width: 1070px) and (max-width: 1440px) {
+	#gamePageContainer {
+		max-width: 1200px;
+		padding: 0 20px;
+	}
+}
+
+/* Large Desktop (> 1440px) */
+@media screen and (min-width: 1440px) {
+	#gamePageContainer {
+		max-width: 1400px;
+		padding: 0 20px;
 	}
 }

@@ -1738,3 +1738,226 @@ div.leet {
 #crowdjet-expand-container iframe {
     display: none;
 }
+
+/* 双层页签和元素列表样式 */
+.tab-container {
+    width: 100%;
+    background-color: #F5F5F7;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* 一级页签 */
+.primary-tabs {
+    display: flex;
+    border-bottom: 1px solid #E5E5EA;
+    margin-bottom: 16px;
+}
+
+.primary-tab {
+    background: none;
+    border: none;
+    padding: 0 16px;
+    height: 44px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #1D1D1F;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s ease;
+}
+
+.primary-tab:hover {
+    color: #0071E3;
+}
+
+.primary-tab.active {
+    color: #0071E3;
+}
+
+.primary-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 16px;
+    right: 16px;
+    height: 2px;
+    background-color: #0071E3;
+}
+
+/* 二级页签 */
+.secondary-tabs {
+    display: flex;
+    border-bottom: 1px solid #E5E5EA;
+    margin-bottom: 20px;
+}
+
+.secondary-tab {
+    background: none;
+    border: none;
+    padding: 0 12px;
+    height: 36px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #1D1D1F;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s ease;
+}
+
+.secondary-tab:hover {
+    color: #0071E3;
+}
+
+.secondary-tab.active {
+    color: #0071E3;
+}
+
+.secondary-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 12px;
+    right: 12px;
+    height: 2px;
+    background-color: #0071E3;
+}
+
+/* 元素列表容器 */
+.element-list-container {
+    width: 100%;
+}
+
+/* 元素网格 */
+.element-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+/* 元素项 */
+.element-item {
+    display: flex;
+    align-items: center;
+    background-color: #FFFFFF;
+    border: 1px solid #E5E5EA;
+    border-radius: 12px;
+    padding: 16px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.element-item:hover {
+    background-color: #F2F2F7;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* 元素图标 */
+.element-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background-color: #F2F2F7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+    flex-shrink: 0;
+}
+
+.icon-placeholder {
+    font-size: 20px;
+    font-weight: 600;
+    color: #0071E3;
+}
+
+/* 元素信息 */
+.element-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.element-name {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1D1D1F;
+    margin: 0 0 4px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.element-description {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: #86868B;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 元素箭头 */
+.element-arrow {
+    font-size: 20px;
+    color: #86868B;
+    margin-left: 12px;
+    flex-shrink: 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+    .element-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .element-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .primary-tabs,
+    .secondary-tabs {
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .primary-tabs {
+        flex-wrap: nowrap;
+    }
+    
+    .secondary-tabs {
+        flex-wrap: nowrap;
+    }
+}
+
+@media (max-width: 480px) {
+    .tab-container {
+        padding: 16px;
+    }
+    
+    .element-item {
+        padding: 12px;
+    }
+    
+    .element-icon {
+        width: 36px;
+        height: 36px;
+        margin-right: 12px;
+    }
+    
+    .element-name {
+        font-size: 14px;
+    }
+    
+    .element-description {
+        font-size: 12px;
+    }
+}
